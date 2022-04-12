@@ -3,29 +3,41 @@ const input = document.querySelector('#myInput');
 const list = document.querySelector('.list');
 
 wrapper.addEventListener('click', (e) => {
-   let what = e.target.dataset.what;
+   let action = e.target.dataset.action;
+   let element = e.target;
 
-   switch (what) {
-       case 'add':
-           const liItem = document.createElement('li');
-           liItem.dataset.what = 'list-item';
-           if (input.value) {
-               liItem.innerHTML = `${input.value} <button class="btn btn-danger btn-sm btn-remove" data-what="remove" title="Remove">-</button>`;
-           } else {
-               alert('Input is empty');
-           }
-
-           list.append(liItem);
-           input.value = '';
+   switch (action) {
+       case 'add-item':
+           addItem();
            break;
-       case 'remove':
-           if (confirm('Are you sure?')) {
-               e.target.closest('li').remove();
-           }
-
+       case 'remove-item':
+           removeItem(element);
            break;
-       case 'list-item':
-           e.target.classList.toggle('done');
+       case 'state-toggle':
+           stateToggle(element);
            break;
    }
 });
+
+function addItem() {
+    const liItem = document.createElement('li');
+    liItem.dataset.action = 'state-toggle';
+    if (input.value) {
+        liItem.innerHTML = `${input.value} <button class="btn btn-danger btn-sm btn-remove" data-action="remove-item" title="Remove">-</button>`;
+    } else {
+        alert('Input is empty');
+    }
+
+    list.append(liItem);
+    input.value = '';
+}
+
+function removeItem(el) {
+    if (confirm('Are you sure?')) {
+        el.closest('li').remove();
+    }
+}
+
+function stateToggle(el) {
+    el.classList.toggle('done');
+}
